@@ -1,0 +1,630 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* ── race info bar ── */
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.backBtn {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+.backBtn:hover { color: var(--text); }
+
+.topBarOver {
+  border-color: rgba(232,184,75,0.45);
+  background: linear-gradient(90deg, rgba(232,184,75,0.08), var(--surface));
+}
+
+.backBtnHero {
+  padding: 0.6rem 1.15rem;
+  border-radius: 10px;
+  background: var(--accent);
+  border: none;
+  color: #0a0a0f;
+  font-size: 0.9rem;
+  font-weight: 800;
+  font-family: inherit;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 0 rgba(232,184,75,0.6);
+  animation: heroPulse 1.6s ease-in-out infinite;
+  transition: background 0.12s, transform 0.12s;
+}
+.backBtnHero:hover {
+  background: #f0c84e;
+  transform: translateY(-1px);
+}
+@keyframes heroPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232,184,75,0.55); }
+  50%      { box-shadow: 0 0 0 8px rgba(232,184,75,0);   }
+}
+
+.cardDisabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* ── setup strength bar ── */
+.setupBadge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid;
+  font-variant-numeric: tabular-nums;
+}
+.setupBadgeHigh { color: #45e87a; border-color: rgba(69,232,122,0.35); background: rgba(69,232,122,0.1); }
+.setupBadgeMid  { color: #e8a020; border-color: rgba(232,160,32,0.35); background: rgba(232,160,32,0.1); }
+.setupBadgeLow  { color: #e85555; border-color: rgba(232,85,85,0.35); background: rgba(232,85,85,0.1); }
+.setupBadgeUnknown {
+  color: var(--text-muted);
+  border-color: var(--border);
+  background: var(--surface-hover);
+}
+
+.setupBarTrackUnknown {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--border) 0 6px,
+    transparent  6px 12px
+  );
+  opacity: 0.55;
+}
+
+.setupBarTrack {
+  width: 100%;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.setupBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.25s ease;
+}
+.setupBarHigh { background: #45e87a; }
+.setupBarMid  { background: #e8a020; }
+.setupBarLow  { background: #e85555; }
+
+.backBtnLocked {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.45;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.raceInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.infoTrack {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.infoItem {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.infoResult {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.infoResultEmpty {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.sep {
+  color: var(--border-hover);
+  font-size: 0.75rem;
+  user-select: none;
+}
+
+/* ── grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+}
+
+/* ── cards ── */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.25rem 1.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  min-height: 160px;
+  text-align: left;
+  font-family: inherit;
+}
+
+.cardClickable {
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+.cardClickable:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.cardWip {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.standingsCard {
+  grid-column: 1 / -1;
+  min-height: unset;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.cardLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.wipBadge {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--surface-hover);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.entryCount {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(232,184,75,0.12);
+  color: var(--accent);
+  border: 1px solid rgba(232,184,75,0.25);
+}
+
+.sessionName {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.cardDesc {
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── maintenance ── */
+.maintDone {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(69,232,122,0.12);
+  color: #45e87a;
+  border: 1px solid rgba(69,232,122,0.3);
+}
+
+.maintNeeded {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(232,160,32,0.12);
+  color: #e8a020;
+  border: 1px solid rgba(232,160,32,0.3);
+}
+
+.maintButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.maintBtn {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  font-family: inherit;
+}
+
+.maintBtnReady {
+  background: var(--surface-hover);
+  color: var(--text);
+  border-color: var(--border-hover);
+}
+.maintBtnReady:hover {
+  background: rgba(69,232,122,0.08);
+  border-color: rgba(69,232,122,0.35);
+}
+
+.maintBtnDone {
+  background: rgba(69,232,122,0.08);
+  color: #45e87a;
+  border-color: rgba(69,232,122,0.3);
+  cursor: default;
+  opacity: 0.8;
+}
+
+.maintBtnOut {
+  background: var(--surface);
+  color: var(--text-muted);
+  border-color: var(--border);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── standings table ── */
+.tableWrap {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 480px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #0e1320;
+}
+
+.table th {
+  padding: 0.45rem 0.75rem;
+  text-align: left;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.thPos  { width: 2.5rem; text-align: center; }
+.thKart { width: 3rem; }
+.thName { min-width: 160px; }
+.thNum  { width: 7rem; text-align: right; }
+
+.tr {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.1s;
+}
+.tr:hover { background: var(--surface-hover); }
+.tr:last-child { border-bottom: none; }
+
+.table td {
+  padding: 0.4rem 0.75rem;
+  white-space: nowrap;
+}
+
+.tdPos {
+  text-align: center;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.tdKart {
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 0.78rem;
+}
+
+.tdName {
+  font-weight: 400;
+  color: var(--text);
+}
+
+.tdNum {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+/* ── player row highlight ── */
+.trPlayer {
+  background: rgba(232,184,75,0.08) !important;
+  outline: 1px solid rgba(232,184,75,0.25);
+  outline-offset: -1px;
+}
+.trPlayer .tdPos  { color: var(--accent); }
+.trPlayer .tdName { font-weight: 700; color: var(--accent); }
+.trPlayer .tdKart { color: var(--accent); }
+.trPlayer .tdNum  { color: var(--accent); }
+
+/* ── dnf row ── */
+.trDnf { opacity: 0.45; }
+.trDnf .tdName { text-decoration: line-through; }
+
+/* ── session badge ── */
+.sessionBadge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.sessionBadgeReady {
+  background: rgba(69,232,122,0.15);
+  color: #45e87a;
+  border: 1px solid rgba(69,232,122,0.35);
+}
+
+.sessionBadgeWait {
+  background: rgba(232,160,32,0.12);
+  color: #e8a020;
+  border: 1px solid rgba(232,160,32,0.3);
+}
+
+/* ── racing overlay ── */
+.racingOverlay {
+  position: fixed;
+  inset: 0;
+  background: #080c14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.racingCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 3rem 3.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  min-width: 420px;
+  text-align: center;
+}
+
+.racingMeta {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.racingSessionName {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin: 0;
+}
+
+.racingFlavor {
+  font-size: 0.88rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  margin-top: -0.5rem;
+}
+
+.racingProgressTrack {
+  width: 100%;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.racingProgressBar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.1s linear;
+}
+
+.racingFooter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.racingCountdown {
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  min-width: 3rem;
+  text-align: right;
+}
+
+.racingSkipBtn {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  background: rgba(232, 184, 75, 0.15);
+  border: 1px solid rgba(232, 184, 75, 0.35);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.racingSkipBtn:hover {
+  background: rgba(232, 184, 75, 0.25);
+  border-color: rgba(232, 184, 75, 0.5);
+}
+
+/* ── results screen ── */
+.resultsScreen {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-height: 100%;
+}
+
+.resultsHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.resultsMeta {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.resultsTitle {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0;
+}
+
+.resultsContinueBtn {
+  padding: 0.65rem 1.35rem;
+  border-radius: 10px;
+  background: var(--accent);
+  border: none;
+  color: #0a0a0f;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s;
+  flex-shrink: 0;
+}
+.resultsContinueBtn:hover { background: #f0c84e; }
+
+.penaltiesSection {
+  padding: 1rem 1.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.penaltiesTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 0.75rem 0;
+}
+
+.penaltiesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.penaltyRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(232, 85, 85, 0.08);
+  border: 1px solid rgba(232, 85, 85, 0.25);
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.penaltyKart {
+  font-weight: 700;
+  color: var(--text);
+  min-width: 3rem;
+}
+
+.penaltyDriver {
+  flex: 1;
+  color: var(--text-muted);
+}
+
+.penaltyReason {
+  color: #e85555;
+  font-weight: 600;
+  min-width: 12rem;
+}
+
+.penaltyPlaces {
+  color: #e85555;
+  font-weight: 700;
+  text-align: right;
+  min-width: 4rem;
+}

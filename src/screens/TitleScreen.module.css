@@ -1,0 +1,188 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  min-height: calc(100vh - 4rem);
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.screen.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ambient glow behind the title */
+.bgGlow {
+  position: fixed;
+  top: -20vh;
+  left: 50%;
+  translate: -50% 0;
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(232,184,75,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── header ── */
+.header {
+  position: relative;
+  z-index: 1;
+}
+
+.title {
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.titleMain {
+  color: var(--text);
+}
+
+.titleAccent {
+  color: var(--accent);
+}
+
+.tagline {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
+}
+
+/* ── karts row ── */
+.kartsRow {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
+  z-index: 1;
+  margin: -1rem 0;
+}
+
+.kartWrapper {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: kartRise 0.5s ease both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes kartRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.kartImg {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6));
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.kartImg:hover {
+  filter: drop-shadow(0 8px 32px rgba(232,184,75,0.35));
+  transform: translateY(-4px);
+}
+
+.kartsGradientLeft,
+.kartsGradientRight {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.kartsGradientLeft {
+  left: 0;
+  background: linear-gradient(to right, var(--bg), transparent);
+}
+
+.kartsGradientRight {
+  right: 0;
+  background: linear-gradient(to left, var(--bg), transparent);
+}
+
+/* ── menu ── */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  position: relative;
+  z-index: 1;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  color: var(--text-muted);
+}
+
+.menuItem.active {
+  background: var(--surface-hover);
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+
+.menuItem.active .itemArrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--accent);
+}
+
+.itemLabel {
+  font-size: 1.05rem;
+  font-weight: 500;
+  min-width: 130px;
+  transition: color 0.15s ease;
+}
+
+.menuItem.active .itemLabel {
+  color: var(--text);
+}
+
+.itemDesc {
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.itemArrow {
+  font-size: 1rem;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+/* ── footer ── */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  position: relative;
+  z-index: 1;
+}

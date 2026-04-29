@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(npm run *)",
+      "WebSearch",
+      "Bash(start http://localhost:5173)",
+      "Bash(echo \"Dev server started, pid: $!\")",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(killall -9 node)"
+    ]
+  }
+}

@@ -1,0 +1,415 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -0.75rem;
+}
+
+.backBtn {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  transition: color 0.15s;
+}
+.backBtn:hover { color: var(--text); }
+
+.kartTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.kartThumb {
+  width: 52px;
+  height: 36px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+}
+
+.kartName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ── grid ── */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-content: start;
+}
+
+.grid .card {
+  flex: 0 0 calc(33.333% - 0.57rem);
+}
+
+/* ── cards ── */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.cardLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ── slot section ── */
+.slotSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.slotTitle {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.equippedSlot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+  background: var(--surface-hover);
+  min-height: 46px;
+}
+
+.equippedSlotFilled {
+  border-style: solid;
+  border-color: rgba(69,232,122,0.35);
+  background: rgba(69,232,122,0.06);
+}
+
+.equippedInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.equippedName {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.equippedDur {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.durabilityBar {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.durabilityFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s, background 0.3s;
+}
+
+.durLabel {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.unequipBtn {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: rgba(232,85,85,0.1);
+  color: #e85555;
+  border: 1px solid rgba(232,85,85,0.25);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.12s, border-color 0.12s;
+}
+.unequipBtn:hover {
+  background: rgba(232,85,85,0.2);
+  border-color: rgba(232,85,85,0.45);
+}
+
+.emptySlot {
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.inventoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.inventoryItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s, border-color 0.1s;
+}
+.inventoryItem:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-hover);
+}
+
+.invItemName {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.invItemQty {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.invItemMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.invItemLife {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #45e87a;
+  letter-spacing: 0.04em;
+}
+
+.noStock {
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── no mychron locked state ── */
+.noMyChron {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+}
+
+.noMyChronIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+  opacity: 0.5;
+}
+
+.noMyChronText {
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── setup adjustments ── */
+.setupHint {
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  background: rgba(69, 232, 122, 0.1);
+  border: 1px solid rgba(69, 232, 122, 0.3);
+  font-size: 0.75rem;
+  color: #45e87a;
+  line-height: 1.4;
+}
+
+.setupList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.adjustRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+}
+
+.adjustLabel {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.adjustControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.adjBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+}
+.adjBtn:hover:not(:disabled) {
+  background: var(--surface-hover);
+  border-color: var(--border-hover);
+}
+.adjBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.adjustValue {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 54px;
+  text-align: center;
+}
+
+.bodyworkLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.bwRow1, .bwRow2, .bwRow4 {
+  display: flex;
+  justify-content: center;
+}
+
+.bwRow3 {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.bwRow3 button {
+  flex: 1;
+}
+
+.bodyworkSlot {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  cursor: not-allowed;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  text-align: center;
+  min-width: 60px;
+}
+
+.bodyworkSlot.bodyworkEquipped {
+  cursor: default;
+  color: var(--text);
+  border-color: #45e87a;
+  background: rgba(69, 232, 122, 0.08);
+}
+
+.bodyworkSlot.bodyworkBroken {
+  cursor: pointer;
+  color: var(--text);
+  border-color: #e85555;
+  background: rgba(232, 85, 85, 0.1);
+}
+
+.bodyworkSlot.bodyworkBroken:hover {
+  border-color: #e85555;
+  background: rgba(232, 85, 85, 0.2);
+}
+
+.bodyworkPartName {
+  font-weight: 500;
+  font-size: 0.68rem;
+  display: block;
+}
+
+.bodyworkLife {
+  font-size: 0.62rem;
+  color: #45e87a;
+  font-weight: 600;
+}
+
+.bodyworkStatus {
+  font-size: 0.62rem;
+  color: #e85555;
+  font-weight: 600;
+}
+
+.bodyworkEmpty {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}

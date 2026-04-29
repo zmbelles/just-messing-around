@@ -1,0 +1,420 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  min-height: 80vh;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.in  { opacity: 1; transform: translateY(0); }
+.out { opacity: 0; transform: translateY(8px); }
+
+/* ── top bar ── */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.backBtn {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  padding: 0.4rem 0;
+  transition: color 0.15s;
+}
+.backBtn:hover { color: var(--text); }
+
+.stepIndicator {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.stepDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.2s ease;
+}
+
+.stepDotActive { background: var(--accent); }
+
+/* ── step content ── */
+.stepContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.stepTitle {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.stepSub {
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  margin-top: -1.25rem;
+}
+
+/* ── team name input ── */
+.teamInput {
+  font-family: inherit;
+  font-size: 1.4rem;
+  font-weight: 500;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 0.9rem 1.2rem;
+  outline: none;
+  width: 100%;
+  max-width: 480px;
+  transition: border-color 0.15s;
+}
+
+.teamInput::placeholder { color: var(--text-muted); }
+
+.teamInput:focus {
+  border-color: var(--accent);
+}
+
+/* ── manufacturer cards ── */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.1rem 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  position: relative;
+}
+
+.card:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.cardSelected {
+  border-color: var(--accent) !important;
+  background: rgba(232,184,75,0.08) !important;
+}
+
+.diffBadge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid;
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+.kartThumb {
+  width: 100%;
+  max-width: 160px;
+  height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+}
+
+.cardLocked {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+}
+
+.cardWarn {
+  border-color: rgba(232,85,85,0.45) !important;
+}
+.cardWarn:hover {
+  border-color: rgba(232,85,85,0.7) !important;
+  background: rgba(232,85,85,0.06) !important;
+}
+
+.cardWarnText {
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: #e85555;
+  line-height: 1.35;
+  text-align: center;
+  margin-top: 0.15rem;
+}
+
+.cardName {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.cardSelected .cardName { color: var(--text); }
+
+/* ── sponsor cards ── */
+.sponsorGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.sponsorCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 1.25rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+
+.sponsorCard:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.sponsorCard.cardSelected {
+  border-color: var(--accent) !important;
+  background: rgba(232,184,75,0.08) !important;
+}
+
+.sponsorLogoWrap {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sponsorLogo {
+  max-width: 110px;
+  max-height: 68px;
+  object-fit: contain;
+}
+
+.sponsorPayout {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.sponsorReq {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ── championship cards ── */
+.champGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+}
+
+.champCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+
+.champCard:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.champCard.cardSelected {
+  border-color: var(--accent) !important;
+  background: rgba(232,184,75,0.08) !important;
+}
+
+.champCardWarn {
+  border-color: rgba(232,85,85,0.4) !important;
+}
+
+.champCardWarn:hover {
+  border-color: rgba(232,85,85,0.7) !important;
+  background: rgba(232,85,85,0.06) !important;
+}
+
+.champCardWarn.cardSelected {
+  border-color: #e85555 !important;
+  background: rgba(232,85,85,0.1) !important;
+}
+
+.champCardLocked {
+  opacity: 0.45;
+  cursor: not-allowed !important;
+}
+
+.champLogoWrap {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.champLogo {
+  max-width: 100%;
+  max-height: 96px;
+  object-fit: contain;
+}
+
+.champLogoBg {
+  background: white;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  max-height: 88px;
+}
+
+.champInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.champName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.champSub {
+  font-size: 0.7rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.warnText {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: #e85555;
+  line-height: 1.4;
+  margin-top: 0.2rem;
+}
+
+/* ── number picker (step 2) ── */
+.numberPickerWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.numberPickerLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.numberPicker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.numBtn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.numBtn:hover:not(:disabled) {
+  background: var(--surface-hover);
+  border-color: var(--border-hover);
+}
+
+.numBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.kartNumDisplay {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  min-width: 6rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.numberPickerHint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+/* ── bottom bar ── */
+.bottomBar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.continueBtn {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 0.8rem 2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background: var(--surface);
+  cursor: not-allowed;
+  transition: all 0.15s ease;
+}
+
+.continueBtnActive {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0a0a0f;
+  cursor: pointer;
+}
+
+.continueBtnActive:hover {
+  background: #f0c84e;
+}

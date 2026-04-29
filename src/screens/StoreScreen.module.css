@@ -1,0 +1,278 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 80vh;
+}
+
+/* ── top bar ── */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.backBtn {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  transition: color 0.15s;
+}
+.backBtn:hover { color: var(--text); }
+
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.loadoutBtn {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: rgba(232,184,75,0.08);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.loadoutBtn:hover { background: rgba(232,184,75,0.16); }
+
+.cashDisplay {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.cashLabel {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cashValue {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ── layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  flex: 1;
+}
+
+/* ── sidebar ── */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  position: sticky;
+  top: 2rem;
+}
+
+.catBtn {
+  text-align: left;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  transition: background 0.12s, color 0.12s;
+  letter-spacing: 0.02em;
+}
+
+.catBtn:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.catBtnActive {
+  background: var(--surface-hover);
+  color: var(--accent) !important;
+}
+
+/* ── content wrapper ── */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── subcategory tabs ── */
+.subcatTabs {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.subcatTab {
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.35rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background: var(--surface);
+  transition: all 0.12s;
+  letter-spacing: 0.03em;
+}
+
+.subcatTab:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.subcatTabActive {
+  background: var(--surface-hover);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── item grid ── */
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.itemCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color 0.15s;
+}
+
+.itemCard:hover {
+  border-color: var(--border-hover);
+}
+
+.itemCardRestricted {
+  border-color: rgba(232,85,85,0.3);
+}
+
+.itemCardRestricted:hover {
+  border-color: rgba(232,85,85,0.6) !important;
+}
+
+.itemTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.restrictedBadge {
+  flex-shrink: 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(232,85,85,0.12);
+  color: #e85555;
+  border: 1px solid rgba(232,85,85,0.3);
+  white-space: nowrap;
+}
+
+.itemCardLocked {
+  opacity: 0.5;
+}
+
+.seasonLockBadge {
+  flex-shrink: 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--surface-hover);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.itemName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+
+.itemDesc {
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+
+.itemBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.buyRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ownedCount {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.itemPrice {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.itemUnit {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.buyBtn {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.35rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background: var(--surface);
+  cursor: not-allowed;
+  transition: all 0.12s;
+}
+
+.buyBtnActive {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0a0a0f;
+  cursor: pointer;
+}
+
+.buyBtnActive:hover {
+  background: #f0c84e;
+}

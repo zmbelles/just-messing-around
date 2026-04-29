@@ -1,0 +1,168 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0 0 0.5rem 0;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.standingsWrapper {
+  flex: 1;
+  overflow-y: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.standings {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.standings thead {
+  background: var(--surface-hover);
+  border-bottom: 2px solid var(--border);
+}
+
+.standings th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.thPos {
+  width: 4rem;
+  text-align: center;
+}
+
+.thName {
+  flex: 1;
+  min-width: 150px;
+}
+
+.thPoints {
+  width: 8rem;
+  text-align: right;
+}
+
+.thPrize {
+  width: 8rem;
+  text-align: right;
+  padding-right: 1.5rem;
+}
+
+.standings tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+
+.standings tbody tr:hover {
+  background: var(--surface-hover);
+}
+
+.tr {
+  display: table-row;
+}
+
+.trPlayer {
+  font-weight: 600;
+  background: rgba(69, 232, 122, 0.08);
+}
+
+.standings td {
+  padding: 0.85rem 1rem;
+  color: var(--text);
+}
+
+.tdPos {
+  text-align: center;
+  width: 4rem;
+}
+
+.tdName {
+  min-width: 150px;
+}
+
+.tdPoints {
+  width: 8rem;
+  text-align: right;
+  color: var(--accent);
+}
+
+.tdPrize {
+  width: 8rem;
+  text-align: right;
+  padding-right: 1.5rem;
+  color: #45e87a;
+  font-weight: 600;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.summaryBox {
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+  text-align: center;
+}
+
+.summaryLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.5rem 0;
+}
+
+.summaryValue {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0;
+}
+
+.continueBtn {
+  align-self: center;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.continueBtn:hover {
+  opacity: 0.9;
+}
