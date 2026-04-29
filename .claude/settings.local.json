@@ -7,7 +7,11 @@
       "Bash(start http://localhost:5173)",
       "Bash(echo \"Dev server started, pid: $!\")",
       "Bash(curl -s http://localhost:5173)",
-      "Bash(killall -9 node)"
+      "Bash(killall -9 node)",
+      "Bash(git rm *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }
