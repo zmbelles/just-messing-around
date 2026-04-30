@@ -393,18 +393,19 @@ export default function App() {
       const playerRow = prev.championshipPoints?.find(row => row.isPlayer)
       const playerFinish = (playerRow?.pos ?? 10) - 1
       const playerPrize = playerFinish < distribution.length ? Math.round(total * distribution[playerFinish]) : 0
+      const finalCash = (prev.cash ?? 0) + playerPrize
 
       return {
         ...prev,
         showChampionshipResults: false,  // Hide results screen
         season: (prev.season ?? 1) + 1,
-        cash: (prev.cash ?? 0) + playerPrize,
+        cash: finalCash,
         continueFromCareer: true,  // Flag to preserve progress
         careerProgressToKeep: {
           parts: prev.parts,
           tires: prev.tires,
           consumables: prev.consumables,
-          cash: (prev.cash ?? 0) + playerPrize,
+          cash: finalCash,
           experience: prev.experience,
           sponsorReputation: prev.sponsorReputation,
         },
