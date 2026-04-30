@@ -54,9 +54,10 @@ export default function RaceScreen({
   const isFinished = sessionIndex >= sessions.length
 
   const tiresEquipped     = kart?.equippedTires != null
+  const isIgnite          = championship.id === 'ignite-challenge'
   const frontSproEquipped = kart?.equippedFrontSprocket != null
   const rearSproEquipped  = kart?.equippedRearSprocket  != null
-  const sprocketsEquipped = frontSproEquipped && rearSproEquipped
+  const sprocketsEquipped = isIgnite ? rearSproEquipped : (frontSproEquipped && rearSproEquipped)
 
   // Setup strength is only "known" once you've run a session on this exact setup.
   // Changing anything reverts the display to "Untested" until you go back out.
@@ -148,7 +149,7 @@ export default function RaceScreen({
   const blockReason = (() => {
     if (isFinished)            return null
     if (!tiresEquipped)        return 'Equip a set of tires before going out.'
-    if (!sprocketsEquipped)    return 'Equip both front and rear sprockets.'
+    if (!sprocketsEquipped)    return isIgnite ? 'Equip a rear sprocket.' : 'Equip both front and rear sprockets.'
     if (!triFlowApplied || !chainLubeApplied) return 'Apply Tri-Flow and Chain Lube before heading out.'
     return null
   })()

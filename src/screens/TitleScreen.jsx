@@ -82,7 +82,7 @@ export default function TitleScreen({ onNavigate }) {
       </nav>
 
       <footer className={styles.footer}>
-        <span>v0.1.0</span>
+        <span>v0.1.1</span>
         <span>↑ ↓ navigate · Enter select</span>
       </footer>
     </div>

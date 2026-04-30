@@ -1,0 +1,335 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-height: 80vh;
+  padding-bottom: 2rem;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.backBtn {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  padding: 0.4rem 0;
+  transition: color 0.15s;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.backBtn:hover {
+  color: var(--text);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0;
+}
+
+.standingsTable {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.table thead {
+  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid var(--border);
+}
+
+.table th {
+  padding: 0.9rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.thPos { width: 60px; text-align: center; }
+.thNum { width: 50px; text-align: center; }
+.thName { flex: 1; }
+.thTeam { flex: 1; }
+.thPoints { width: 100px; text-align: right; }
+
+.table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.table tbody tr:hover {
+  background: rgba(232, 184, 75, 0.06);
+}
+
+.table td {
+  padding: 0.9rem;
+  color: var(--text);
+}
+
+.tdPos {
+  text-align: center;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.tdNum {
+  text-align: center;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.tdName {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.playerBadge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: var(--accent);
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.tdTeam {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.tdPoints {
+  text-align: right;
+  font-weight: 600;
+}
+
+.trPlayer {
+  background: rgba(69, 232, 122, 0.08) !important;
+}
+
+.statsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.statsTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.statCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.statCard:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-hover);
+}
+
+.statCardPlayer {
+  border-color: var(--accent) !important;
+  background: rgba(69, 232, 122, 0.06) !important;
+}
+
+.statHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.statName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.statTeam {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0.25rem 0 0 0;
+}
+
+.statKart {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+
+.statBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.statRow:first-child {
+  border-top: none;
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.statValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ── Modal ── */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modalClose {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.8rem;
+  font-weight: 300;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.modalClose:hover {
+  color: var(--text);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.modalName {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.modalTeam {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0.4rem 0 0 0;
+}
+
+.modalKart {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.modalRow:first-child {
+  border-top: none;
+}
+
+.modalLabel {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.modalValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}

@@ -10,6 +10,7 @@ import ChampionshipResultsScreen from './screens/ChampionshipResultsScreen'
 import ChampionshipCompleteModal from './screens/ChampionshipCompleteModal'
 import CreditsScreen from './screens/CreditsScreen'
 import { ForceLoadoutModal } from './components/LoadoutModal'
+import CompetitorScreen from './screens/CompetitorScreen'
 import { getLoadout, getLoadoutTotal } from './data/loadouts'
 import { getCoachingSetup } from './data/coachingSetups'
 import { buildBlankStandings, buildBlankChampionshipPoints } from './data/competitors'
@@ -92,6 +93,16 @@ function buildInitialGameState(careerData) {
     rideHeight: 5,
   }
 
+  // Determine starting tire type based on championship
+  let defaultTireKey = 'tiresMGOrange'
+  let defaultTire = null
+  if (careerData.championship.id === 'ignite-challenge') {
+    defaultTireKey = 'tiresHoosierSlick'
+  } else if (careerData.championship.id === 'route66') {
+    defaultTireKey = 'tiresMGRed'
+  }
+  defaultTire = STORE_ITEMS.find(i => i.partsKey === defaultTireKey)
+
   return {
     teamName:          careerData.teamName,
     driverName:        careerData.driverName,
@@ -116,13 +127,21 @@ function buildInitialGameState(careerData) {
     },
     parts: {
       completeEngine: 1,
+      neckBrace: 0,
+      ribProtector: 0,
+      axle: 0,
+      wheel: 0,
     },
-    tires: {},  // Tire sets: { 'tiresHoosierSlick': [{ durability: 100 }, ...], ... }
+    tires: {
+      [defaultTireKey]: [{ durability: 100 }],
+    },
     kart: {
-      equippedTires:         null,
+      equippedTires:         defaultTire ? { ...defaultTire, setIndex: 0, durability: 100 } : null,
       equippedFrontSprocket: null,
       equippedRearSprocket:  null,
       equippedEngine:        { id: 'completeEngine', category: 'engine', name: 'Complete Engine', price: 450, partsKey: 'completeEngine', durability: 100, power: 100 },
+      equippedAxle:          { id: 'axle', category: 'axle', name: 'Axle', partsKey: 'axle', durability: 100 },
+      equippedWheels:        { id: 'wheel', category: 'wheels', name: 'Wheels (Set)', partsKey: 'wheel', durability: 100 },
       frame:                 { id: 'frame', category: 'frame', name: 'Frame', partsKey: 'frame', durability: 100 },
       fairing:               { id: 'fairing', category: 'body', name: 'Fairing', price: 58, partsKey: 'fairing', durability: 100 },
       sidePodLeft:           { id: 'sidePodLeft', category: 'body', name: 'Side Pod — Left', price: 52, partsKey: 'sidePodLeft', durability: 100 },
@@ -311,8 +330,9 @@ export default function App() {
   }
 
   function handleHubNavigate(dest) {
-    if (dest === 'store')   setScreen('store')
-    if (dest === 'chassis') setScreen('chassis')
+    if (dest === 'store')       setScreen('store')
+    if (dest === 'chassis')     setScreen('chassis')
+    if (dest === 'competitors') setScreen('competitors')
     if (dest === 'race') {
       // Deduct entry fee if this is the first session of the weekend
       setGameState(prev => {
@@ -364,19 +384,19 @@ export default function App() {
     const sponsorTier = gameState.sponsor?.tier ?? 1
     let requirementMet = false
 
-    // Check sponsor requirement
+    // Check sponsor requirement - higher tiers have tougher requirements
     if (sponsorTier === 4) {
-      // Manufacturer sponsor: must win (1st place)
-      requirementMet = playerFinish === 1
+      // Manufacturer sponsor: must finish top 3 (challenging)
+      requirementMet = playerFinish <= 3
     } else if (sponsorTier === 3) {
       // Mobil 1: Top 5
       requirementMet = playerFinish <= 5
     } else if (sponsorTier === 2) {
-      // Lawson: Top 10
-      requirementMet = playerFinish <= 10
+      // Lawson: Top 8 (was Top 10)
+      requirementMet = playerFinish <= 8
     } else {
-      // Bent Axle: Top 15
-      requirementMet = playerFinish <= 15
+      // Bent Axle: Top 12 (was Top 15)
+      requirementMet = playerFinish <= 12
     }
 
     setChampCompleteState({ isWin: requirementMet, playerFinish })
@@ -567,10 +587,11 @@ export default function App() {
     })
   }
 
-  function handlePurchase(item, qty = 1) {
+  function handlePurchase(item, qty = 1, price = null) {
     soundManager.playEffect(SOUNDS.purchaseEffect)
+    const finalPrice = price !== null ? price : item.price
     setGameState(prev => {
-      let next = { ...prev, cash: prev.cash - item.price * qty }
+      let next = { ...prev, cash: prev.cash - finalPrice * qty }
       if (item.inventoryKey) {
         next.consumables = { ...prev.consumables, [item.inventoryKey]: (prev.consumables[item.inventoryKey] ?? 0) + qty }
       } else if (item.partsKey && item.partsKey.startsWith('tires')) {
@@ -735,14 +756,48 @@ export default function App() {
         next = { ...next, kart: { ...next.kart, frame: { ...next.kart.frame, durability: Math.max(0, next.kart.frame.durability - (isRaceSession ? 1 : 0)) } } }
       }
 
+      // Axle durability reduction
+      if (next.kart.equippedAxle) {
+        next = { ...next, kart: { ...next.kart, equippedAxle: { ...next.kart.equippedAxle, durability: Math.max(0, next.kart.equippedAxle.durability - (isRaceSession ? 1 : 0)) } } }
+      }
+
+      // Wheels durability reduction
+      if (next.kart.equippedWheels) {
+        next = { ...next, kart: { ...next.kart, equippedWheels: { ...next.kart.equippedWheels, durability: Math.max(0, next.kart.equippedWheels.durability - (isRaceSession ? 2 : 0)) } } }
+      }
+
       // Award experience based on finishing position in race sessions
       if (isRaceSession && !playerRow?.dnf && playerRow) {
         const xpRates = prev.championship.id === 'norway'
-          ? [0.08, 0.07, 0.06, 0.05, 0.04, 0.03, 0.02, 0.01]  // 1-8%
-          : [0.05, 0.045, 0.04, 0.035, 0.03, 0.025, 0.02, 0.015]  // 1-5%
+          ? [0.06, 0.05, 0.04, 0.03, 0.025, 0.02, 0.015, 0.01]  // 1-6% (reduced)
+          : [0.03, 0.027, 0.024, 0.021, 0.018, 0.015, 0.012, 0.009]  // 1-3% (reduced from 1-5%)
         const xpRate = xpRates[playerRow.pos - 1] ?? 0
-        const xpGain = Math.ceil(prev.experience * xpRate) + 1
+        const xpGain = Math.max(1, Math.ceil(prev.experience * xpRate))
         next = { ...next, experience: (next.experience ?? 0) + xpGain }
+      }
+
+      // Apply reputation changes based on penalties
+      if (isRaceSession && playerRow) {
+        let repChange = 0
+        // -1 reputation for contact/incident
+        if (playerRow.penalty && playerRow.penalty.reason && playerRow.penalty.reason.includes('contact')) {
+          repChange -= 1
+        }
+        // -2 reputation for unsportsmanlike behavior
+        if (playerRow.penalty && playerRow.penalty.reason && (playerRow.penalty.reason.includes('unsportsmanlike') || playerRow.penalty.reason.includes('aggressive'))) {
+          repChange -= 2
+        }
+        // +5 reputation for flawless weekend (no penalties in any session this weekend)
+        if (!playerRow.penalty && !playerCrash) {
+          const weekendSoFar = results.filter(r => r.isPlayer).length
+          const allSessionsFlawless = !results.some(r => r.isPlayer && r.penalty)
+          if (allSessionsFlawless && isLastSession) {
+            repChange += 5
+          }
+        }
+        if (repChange !== 0) {
+          next = { ...next, reputation: Math.max(0, (next.reputation ?? 50) + repChange) }
+        }
       }
 
       // Consume 1 fuel per session
@@ -912,6 +967,7 @@ export default function App() {
         onBack={() => setScreen('hub')}
       />
     )
+    if (screen === 'competitors') return <CompetitorScreen gameState={gameState} onBack={() => setScreen('hub')} />
     if (screen === 'chassis')    return <ChassisScreen gameState={gameState} onBack={() => setScreen('hub')} onOpenKart={() => { setKartFrom('chassis'); setScreen('kart') }} onService={handleService} />
     if (screen === 'kart')       return <KartDetailScreen gameState={gameState} onBack={() => setScreen(kartFrom)} onEquip={handleEquipItem} onSetupChange={handleKartUpdate} />
     if (screen === 'race')       return (

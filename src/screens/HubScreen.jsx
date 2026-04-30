@@ -166,13 +166,15 @@ export default function HubScreen({ gameState, onNavigate, onBuyRaceConsumables 
           <p className={styles.cardDesc}>Buy consumables, parts, and supplies.</p>
         </button>
 
-        {/* Box 4 — Research (WIP) */}
-        <button className={`${styles.card} ${styles.cardWip}`} disabled>
+        {/* Box 4 — Competitors */}
+        <button
+          className={`${styles.card} ${styles.cardClickable}`}
+          onClick={() => onNavigate('competitors')}
+        >
           <div className={styles.cardHeader}>
-            <span className={styles.cardLabel}>Research</span>
-            <span className={styles.wipBadge}>Coming Soon</span>
+            <span className={styles.cardLabel}>Competitors</span>
           </div>
-          <p className={styles.cardDesc}>Unlock chassis upgrades and technical advantages.</p>
+          <p className={styles.cardDesc}>Check out the championship standings and competitor info.</p>
         </button>
 
         {/* Box 5 — Driver Development (WIP) */}

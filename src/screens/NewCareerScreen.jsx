@@ -38,15 +38,15 @@ const BASE_SPONSORS = [
   { id: 'mobil1',    name: 'Mobil 1',           payoutAmount: 10000, payout: '$10,000 / season', requirement: 'Finish Top 5',  logo: mobil1Logo,  logoType: 'img', tier: 3 },
 ]
 
-// Step order: 1 Team Name → 2 Championship → 3 Driver Info → 4 Chassis → 5 Sponsor
-// When continuing from career, skip team/driver steps
+// Step order: 1 Team Name → 2 Driver Name → 3 Championship → 4 Chassis → 5 Number → 6 Sponsor
+// When continuing from career, skip team/driver/number steps
 export default function NewCareerScreen({ gameState, onComplete, onBack }) {
   const isContinuing = gameState?.continueFromCareer ?? false
   const prevTeamName = gameState?.teamName ?? ''
   const prevDriverName = gameState?.driverName ?? ''
   const prevDriverNumber = gameState?.kartNumber ? gameState.kartNumber - 500 : 42
 
-  const [step,         setStep]         = useState(isContinuing ? 2 : 1)
+  const [step,         setStep]         = useState(isContinuing ? 4 : 1)
   const [teamName,     setTeamName]     = useState(prevTeamName)
   const [championship, setChampionship] = useState(null)
   const [driverName,   setDriverName]   = useState(prevDriverName)
@@ -57,11 +57,11 @@ export default function NewCareerScreen({ gameState, onComplete, onBack }) {
   const inputRef       = useRef(null)
   const driverInputRef = useRef(null)
 
-  const TOTAL_STEPS = 5
+  const TOTAL_STEPS = 6
 
   useEffect(() => {
     if (step === 1) inputRef.current?.focus()
-    if (step === 3) driverInputRef.current?.focus()
+    if (step === 2) driverInputRef.current?.focus()
   }, [step])
 
   // Numbers already used by competitors in the selected championship
@@ -108,8 +108,8 @@ export default function NewCareerScreen({ gameState, onComplete, onBack }) {
     }
     setAnimating(true)
     setTimeout(() => {
-      // When entering driver step, auto-adjust if default number is already taken
-      if (step === 2 && championship) {
+      // When entering number step, auto-adjust if default number is already taken
+      if (step === 5 && championship) {
         const taken = new Set(getCompetitors(championship).map(c => String(c.kart)))
         setDriverNumber(n => {
           if (!taken.has(String(500 + n))) return n
@@ -120,25 +120,33 @@ export default function NewCareerScreen({ gameState, onComplete, onBack }) {
         })
       }
       let nextStep = step + 1
-      // Skip step 1 and 3 if continuing from career
-      if (isContinuing && nextStep === 1) nextStep = 2
-      if (isContinuing && nextStep === 3) nextStep = 4
+      // Skip step 1, 2, and 3 if continuing from career
+      if (isContinuing && nextStep <= 3) nextStep = 4
       setStep(nextStep)
       setAnimating(false)
     }, 220)
   }
 
   function back() {
-    if (step === 1 || (isContinuing && step === 2)) { onBack?.(); return }
+    if (step === 1 || (isContinuing && step === 4)) { onBack?.(); return }
     setAnimating(true)
     setTimeout(() => {
       const newStep = step - 1
-      // Skip step 1 if continuing
-      if (isContinuing && newStep === 1) {
-        setStep(2)
+      // Skip step 1, 2, and 3 if continuing
+      if (isContinuing && newStep <= 3) {
+        setStep(4)
       } else {
         setStep(newStep)
       }
+      setAnimating(false)
+    }, 220)
+  }
+
+  function skip() {
+    if (animating) return
+    setAnimating(true)
+    setTimeout(() => {
+      setStep(3)
       setAnimating(false)
     }, 220)
   }
@@ -147,12 +155,22 @@ export default function NewCareerScreen({ gameState, onComplete, onBack }) {
   const isIgnite   = championship?.id === 'ignite-challenge'
   const isRoute66  = championship?.id === 'route66'
 
+  // Get Margay difficulty based on selected championship
+  function getMargayDifficulty() {
+    if (!championship) return 'Impossible'
+    if (championship.id === 'ignite-challenge') return 'Hard'
+    if (championship.id === 'norway') return 'Expert'
+    if (championship.id === 'route66') return 'Impossible'
+    return 'Impossible'
+  }
+
   const canAdvance =
     (step === 1 && teamName.trim().length > 0) ||
-    (step === 2 && championship !== null) ||
-    (step === 3 && driverName.trim().length > 0 && driverNumber >= 1 && driverNumber <= 99 && !isNumberTaken(driverNumber)) ||
+    (step === 2 && driverName.trim().length > 0) ||
+    (step === 3 && championship !== null) ||
     (step === 4 && manufacturer !== null && (!isIgnite || manufacturer.id === 'margay')) ||
-    (step === 5 && sponsor !== null)
+    (step === 5 && driverNumber >= 1 && driverNumber <= 99 && !isNumberTaken(driverNumber)) ||
+    (step === 6 && sponsor !== null)
 
   return (
     <div className={`${styles.screen} ${animating ? styles.out : styles.in}`}>
@@ -183,8 +201,26 @@ export default function NewCareerScreen({ gameState, onComplete, onBack }) {
         </div>
       )}
 
-      {/* Step 2 — Championship */}
-      {step === 2 && (
+      {/* Step 2 — Driver Name */}
+      {step === 2 && !isContinuing && (
+        <div className={styles.stepContent}>
+          <h2 className={styles.stepTitle}>Your Driver</h2>
+          <p className={styles.stepSub}>What's your name?</p>
+          <input
+            ref={driverInputRef}
+            className={styles.teamInput}
+            type="text"
+            placeholder="Driver full name"
+            value={driverName}
+            maxLength={32}
+            onChange={e => setDriverName(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && canAdvance && advance()}
+          />
+        </div>
+      )}
+
+      {/* Step 3 — Championship */}
+      {step === 3 && (
         <div className={styles.stepContent}>
           <h2 className={styles.stepTitle}>Choose Your Championship</h2>
           <p className={styles.stepSub}>Pick the series you'll compete in this season.</p>
@@ -219,42 +255,7 @@ export default function NewCareerScreen({ gameState, onComplete, onBack }) {
         </div>
       )}
 
-      {/* Step 3 — Driver Info */}
-      {step === 3 && !isContinuing && (
-        <div className={styles.stepContent}>
-          <h2 className={styles.stepTitle}>Your Driver</h2>
-          <p className={styles.stepSub}>Your name and number on the entry list.</p>
-          <input
-            ref={driverInputRef}
-            className={styles.teamInput}
-            type="text"
-            placeholder="Driver full name"
-            value={driverName}
-            maxLength={32}
-            onChange={e => setDriverName(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && canAdvance && advance()}
-          />
-          <div className={styles.numberPickerWrap}>
-            <span className={styles.numberPickerLabel}>Kart Number</span>
-            <div className={styles.numberPicker}>
-              <button
-                className={styles.numBtn}
-                onClick={() => { const p = nextAvailable(driverNumber, -1); if (p !== null) setDriverNumber(p) }}
-                disabled={nextAvailable(driverNumber, -1) === null}
-              >−</button>
-              <span className={styles.kartNumDisplay}>#{kartNumber}</span>
-              <button
-                className={styles.numBtn}
-                onClick={() => { const n = nextAvailable(driverNumber, 1); if (n !== null) setDriverNumber(n) }}
-                disabled={nextAvailable(driverNumber, 1) === null}
-              >+</button>
-            </div>
-            <span className={styles.numberPickerHint}>Choose 1–99 · your number with a 5 on the front</span>
-          </div>
-        </div>
-      )}
-
-      {/* Step 4 — Chassis */}
+      {/* Step 4 — Kart/Chassis */}
       {step === 4 && (
         <div className={styles.stepContent}>
           <h2 className={styles.stepTitle}>Choose Your Chassis</h2>
@@ -264,7 +265,9 @@ export default function NewCareerScreen({ gameState, onComplete, onBack }) {
           <div className={styles.cardGrid}>
             {MANUFACTURERS.map(mfr => {
               const lockedForIgnite = isIgnite && mfr.id !== 'margay'
-              const margayWarn      = isRoute66 && mfr.id === 'margay'
+              const isMargay        = mfr.id === 'margay'
+              const displayDifficulty = isMargay ? getMargayDifficulty() : mfr.difficulty
+              const margayWarn      = isRoute66 && isMargay
               return (
                 <button
                   key={mfr.id}
@@ -275,11 +278,11 @@ export default function NewCareerScreen({ gameState, onComplete, onBack }) {
                   <span
                     className={styles.diffBadge}
                     style={{
-                      color:        lockedForIgnite ? '#888' : DIFFICULTY_COLOR[mfr.difficulty],
-                      borderColor:  lockedForIgnite ? '#888' : DIFFICULTY_COLOR[mfr.difficulty],
+                      color:        lockedForIgnite ? '#888' : DIFFICULTY_COLOR[displayDifficulty],
+                      borderColor:  lockedForIgnite ? '#888' : DIFFICULTY_COLOR[displayDifficulty],
                     }}
                   >
-                    {lockedForIgnite ? 'IGNITE ONLY' : margayWarn ? 'DO NOT ATTEMPT' : mfr.difficulty}
+                    {lockedForIgnite ? 'IGNITE ONLY' : margayWarn ? 'DO NOT ATTEMPT' : displayDifficulty}
                   </span>
                   <img src={mfr.kart} alt={mfr.name} className={styles.kartThumb} draggable={false} />
                   <span className={styles.cardName}>{mfr.name}</span>
@@ -293,8 +296,37 @@ export default function NewCareerScreen({ gameState, onComplete, onBack }) {
         </div>
       )}
 
-      {/* Step 5 — Sponsor */}
+      {/* Step 5 — Number Selection */}
       {step === 5 && (
+        <div className={styles.stepContent}>
+          <h2 className={styles.stepTitle}>Choose Your Number</h2>
+          <p className={styles.stepSub}>Your kart number on the grid.</p>
+          <div className={styles.numberPickerWrap}>
+            <div className={styles.numberPicker}>
+              {isRoute66 && <span className={styles.kartNumPrefix}>5</span>}
+              <input
+                ref={driverInputRef}
+                type="number"
+                className={styles.kartNumInput}
+                min="1"
+                max="99"
+                value={driverNumber}
+                onChange={e => {
+                  const val = parseInt(e.target.value, 10)
+                  if (!isNaN(val) && val >= 1 && val <= 99) {
+                    setDriverNumber(val)
+                  }
+                }}
+                onKeyDown={e => e.key === 'Enter' && canAdvance && advance()}
+              />
+            </div>
+            <span className={styles.numberPickerHint}>{isRoute66 ? 'Type 1–99 · your number with a 5 on the front' : 'Type 1–999'}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Step 6 — Sponsor */}
+      {step === 6 && (
         <div className={styles.stepContent}>
           <h2 className={styles.stepTitle}>Choose Your Sponsor</h2>
           <p className={styles.stepSub}>They fund you — you deliver results.</p>
@@ -318,6 +350,14 @@ export default function NewCareerScreen({ gameState, onComplete, onBack }) {
       )}
 
       <div className={styles.bottomBar}>
+        {(step === 1 || step === 2) && (
+          <button
+            className={styles.skipBtn}
+            onClick={skip}
+          >
+            Skip
+          </button>
+        )}
         <button
           className={`${styles.continueBtn} ${canAdvance ? styles.continueBtnActive : ''}`}
           disabled={!canAdvance}

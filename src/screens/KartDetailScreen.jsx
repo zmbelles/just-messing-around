@@ -1,20 +1,12 @@
 import GameHeader from '../components/GameHeader'
+import KartTiresComponent from '../components/KartTiresComponent'
+import KartBodyworkComponent from '../components/KartBodyworkComponent'
+import KartEngineComponent from '../components/KartEngineComponent'
+import KartFrameComponent from '../components/KartFrameComponent'
+import KartAxleComponent from '../components/KartAxleComponent'
+import KartWheelsComponent from '../components/KartWheelsComponent'
 import { STORE_ITEMS } from '../data/storeItems'
 import styles from './KartDetailScreen.module.css'
-
-const TIRE_PART_KEYS = ['tiresHoosierSlick','tiresHoosierRain','tiresMGYellow','tiresMGOrange','tiresMGRed','tiresRain']
-const ENGINE_PART_KEYS = ['completeEngine','lawsonPrepEngine','dmitriEngine']
-const BODYWORK_PART_KEYS = ['fairing','sidePodLeft','sidePodRight','frontBumper','rearBumper']
-
-function getTireItems(championship) {
-  return STORE_ITEMS.filter(i => {
-    if (!TIRE_PART_KEYS.includes(i.partsKey)) return false
-    if (!i.restrictedTo) return true
-    // restrictedTo can be a string or array
-    const allowed = Array.isArray(i.restrictedTo) ? i.restrictedTo : [i.restrictedTo]
-    return allowed.includes(championship?.id)
-  })
-}
 
 function getSprocketItems(pitch, type, championship) {
   const sub = `#${pitch} ${type}`
@@ -24,50 +16,6 @@ function getSprocketItems(pitch, type, championship) {
     const allowed = Array.isArray(i.restrictedTo) ? i.restrictedTo : [i.restrictedTo]
     return allowed.includes(championship?.id)
   })
-}
-
-function getEngineItems() {
-  return STORE_ITEMS.filter(i => ENGINE_PART_KEYS.includes(i.partsKey))
-}
-
-function getBodyworkItems() {
-  return STORE_ITEMS.filter(i => BODYWORK_PART_KEYS.includes(i.partsKey))
-}
-
-function renderBodyworkSlot(partKey, kart, parts) {
-  const item = STORE_ITEMS.find(i => i.partsKey === partKey)
-  const equipped = kart[partKey]
-  const spareQty = parts[partKey] ?? 0
-  const isBroken = equipped && (equipped.durability ?? 100) === 0
-  const durabilityPct = equipped ? (equipped.durability ?? 100) : 0
-
-  return (
-    <button
-      key={partKey}
-      className={`${styles.bodyworkSlot} ${isBroken ? styles.bodyworkBroken : equipped ? styles.bodyworkEquipped : ''}`}
-      onClick={() => {
-        if (isBroken && spareQty > 0) {
-          // Replace broken part with spare
-          onEquip(partKey, item)
-        }
-      }}
-      disabled={!isBroken && !equipped}
-      title={item?.name}
-    >
-      {equipped ? (
-        <>
-          <span className={styles.bodyworkPartName}>{item?.name.split(' ')[0]}</span>
-          {isBroken ? (
-            <span className={styles.bodyworkStatus}>BROKEN</span>
-          ) : (
-            <span className={styles.bodyworkLife}>{durabilityPct}%</span>
-          )}
-        </>
-      ) : (
-        <span className={styles.bodyworkEmpty}>—</span>
-      )}
-    </button>
-  )
 }
 
 function DurabilityBar({ value }) {
@@ -80,13 +28,11 @@ function DurabilityBar({ value }) {
   )
 }
 
-function SlotSection({ title, equipped, inventory, onEquip, onUnequip, itemLabel }) {
+function SlotSection({ title, equipped, inventory, onEquip, onUnequip }) {
   const available = inventory.filter(i => (i.qty ?? 0) > 0)
   return (
     <div className={styles.slotSection}>
       <p className={styles.slotTitle}>{title}</p>
-
-      {/* equipped */}
       <div className={`${styles.equippedSlot} ${equipped ? styles.equippedSlotFilled : ''}`}>
         {equipped ? (
           <>
@@ -105,29 +51,23 @@ function SlotSection({ title, equipped, inventory, onEquip, onUnequip, itemLabel
           <span className={styles.emptySlot}>Nothing equipped</span>
         )}
       </div>
-
-      {/* available in inventory */}
       {available.length > 0 && (
         <div className={styles.inventoryList}>
-          {available.map(({ item, qty }) => {
-            const isTire = item.partsKey?.startsWith('tires')
-            const qtyLabel = isTire ? `×${qty} set${qty !== 1 ? 's' : ''}` : `×${qty} in stock`
-            return (
-              <button
-                key={item.id}
-                className={styles.inventoryItem}
-                onClick={() => onEquip(item)}
-              >
-                <span className={styles.invItemName}>{item.name}</span>
-                <span className={styles.invItemMeta}>
-                  {item.durability !== undefined && (
-                    <span className={styles.invItemLife}>Lifespan 100% · Fresh</span>
-                  )}
-                  <span className={styles.invItemQty}>{qtyLabel}</span>
-                </span>
-              </button>
-            )
-          })}
+          {available.map(({ item, qty }) => (
+            <button
+              key={item.id}
+              className={styles.inventoryItem}
+              onClick={() => onEquip(item)}
+            >
+              <span className={styles.invItemName}>{item.name}</span>
+              <span className={styles.invItemMeta}>
+                {item.durability !== undefined && (
+                  <span className={styles.invItemLife}>Lifespan 100% · Fresh</span>
+                )}
+                <span className={styles.invItemQty}>×{qty} in stock</span>
+              </span>
+            </button>
+          ))}
         </div>
       )}
       {available.length === 0 && !equipped && (
@@ -151,8 +91,8 @@ function AdjustRow({ label, value, display, onDown, onUp, downDisabled, upDisabl
 }
 
 export default function KartDetailScreen({ gameState, onBack, onEquip, onSetupChange }) {
-  const { manufacturer, parts = {}, tires = {}, kart, championship, experience = 0 } = gameState
-  const { equippedTires, equippedFrontSprocket, equippedRearSprocket, equippedEngine, frame, fairing, sidePodLeft, sidePodRight, frontBumper, rearBumper, setup } = kart
+  const { manufacturer, parts = {}, kart, championship, experience = 0 } = gameState
+  const { equippedFrontSprocket, equippedRearSprocket, setup } = kart
   const isRoute66  = championship.id === 'route66'
   const isIgnite   = championship.id === 'ignite-challenge'
   const pitch      = isRoute66 ? 219 : 35
@@ -170,16 +110,7 @@ export default function KartDetailScreen({ gameState, onBack, onEquip, onSetupCh
 
   function getInventoryItems(storeItemList) {
     return storeItemList.map(item => {
-      let qty = 0
-      if (item.partsKey && item.partsKey.startsWith('tires')) {
-        // For tires, count sets with durability > 0, excluding the equipped set
-        const tireSets = (tires[item.partsKey] ?? []).filter(s => s.durability > 0)
-        qty = tireSets.filter((_, idx) =>
-          !(equippedTires && equippedTires.partsKey === item.partsKey && equippedTires.setIndex === idx)
-        ).length
-      } else {
-        qty = parts[item.partsKey] ?? 0
-      }
+      const qty = parts[item.partsKey] ?? 0
       return { item, qty }
     })
   }
@@ -201,51 +132,12 @@ export default function KartDetailScreen({ gameState, onBack, onEquip, onSetupCh
       </div>
 
       <div className={styles.grid}>
-
-        {/* ── Tires ── */}
-        <div className={styles.card}>
-          <p className={styles.cardLabel}>Tires</p>
-          <SlotSection
-            title="Equipped Set"
-            equipped={equippedTires}
-            inventory={getInventoryItems(getTireItems(championship))}
-            onEquip={item => onEquip('equippedTires', item)}
-            onUnequip={() => onEquip('equippedTires', null)}
-          />
-        </div>
-
-        {/* ── Bodywork ── */}
-        <div className={styles.card}>
-          <p className={styles.cardLabel}>Bodywork</p>
-          {[
-            { partKey: 'fairing', label: 'Fairing' },
-            { partKey: 'sidePodLeft', label: 'Left Side Pod' },
-            { partKey: 'sidePodRight', label: 'Right Side Pod' },
-            { partKey: 'frontBumper', label: 'Front Bumper' },
-            { partKey: 'rearBumper', label: 'Rear Bumper' },
-          ].map(({ partKey, label }) => (
-            <SlotSection
-              key={partKey}
-              title={label}
-              equipped={kart[partKey]}
-              inventory={getInventoryItems([STORE_ITEMS.find(i => i.partsKey === partKey)].filter(Boolean))}
-              onEquip={item => onEquip(partKey, item)}
-              onUnequip={() => onEquip(partKey, null)}
-            />
-          ))}
-        </div>
-
-        {/* ── Engine ── */}
-        <div className={styles.card}>
-          <p className={styles.cardLabel}>Engine</p>
-          <SlotSection
-            title="Equipped Engine"
-            equipped={equippedEngine}
-            inventory={getInventoryItems(getEngineItems())}
-            onEquip={item => onEquip('equippedEngine', item)}
-            onUnequip={() => onEquip('equippedEngine', null)}
-          />
-        </div>
+        <KartTiresComponent gameState={gameState} onEquip={onEquip} championship={championship} />
+        <KartBodyworkComponent gameState={gameState} onEquip={onEquip} />
+        <KartEngineComponent gameState={gameState} onEquip={onEquip} />
+        <KartFrameComponent gameState={gameState} />
+        <KartAxleComponent gameState={gameState} onEquip={onEquip} />
+        <KartWheelsComponent gameState={gameState} onEquip={onEquip} />
 
         {/* ── Sprockets ── */}
         <div className={styles.card}>
@@ -266,27 +158,6 @@ export default function KartDetailScreen({ gameState, onBack, onEquip, onSetupCh
             onEquip={item => onEquip('equippedRearSprocket', item)}
             onUnequip={() => onEquip('equippedRearSprocket', null)}
           />
-        </div>
-
-        {/* ── Frame ── */}
-        <div className={styles.card}>
-          <p className={styles.cardLabel}>Frame</p>
-          {frame ? (
-            <div className={styles.slotSection}>
-              <p className={styles.slotTitle}>Equipped Frame</p>
-              <div className={`${styles.equippedSlot} ${frame ? styles.equippedSlotFilled : ''}`}>
-                <div className={styles.equippedInfo}>
-                  <span className={styles.equippedName}>{frame.name}</span>
-                  <div className={styles.equippedDur}>
-                    <DurabilityBar value={frame.durability} />
-                    <span className={styles.durLabel}>{Math.round(frame.durability)}%</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <p className={styles.slotTitle}>No frame equipped</p>
-          )}
         </div>
 
         {/* ── Setup ── */}

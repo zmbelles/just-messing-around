@@ -135,11 +135,31 @@ const COMPETITORS_IGNITE = [
   { kart: '58',  name: 'Riley Scott',         skill: 61 },
 ]
 
+function getRandomChassis(seed) {
+  const random = Math.sin(seed) * 10000
+  const rand = random - Math.floor(random)
+
+  if (rand < 0.40) return 'Tony Kart'
+  if (rand < 0.80) return 'Birel'
+  if (rand < 0.95) return 'Coyote'
+  return 'Margay'
+}
+
+function addChassisToCompetitors(competitors, championship) {
+  return competitors.map((comp, idx) => ({
+    ...comp,
+    chassis: championship.id === 'ignite-challenge' ? 'Margay' : getRandomChassis(comp.kart + idx)
+  }))
+}
+
 export function getCompetitors(championship) {
-  if (championship.id === 'route66')          return COMPETITORS_ROUTE66
-  if (championship.id === 'norway')           return COMPETITORS_CLUB
-  if (championship.id === 'ignite-challenge') return COMPETITORS_IGNITE
-  return COMPETITORS_ROUTE66
+  let baseCompetitors
+  if (championship.id === 'route66')          baseCompetitors = COMPETITORS_ROUTE66
+  else if (championship.id === 'norway')      baseCompetitors = COMPETITORS_CLUB
+  else if (championship.id === 'ignite-challenge') baseCompetitors = COMPETITORS_IGNITE
+  else baseCompetitors = COMPETITORS_ROUTE66
+
+  return addChassisToCompetitors(baseCompetitors, championship)
 }
 
 // player: { name, kart } — injected at end with isPlayer:true.

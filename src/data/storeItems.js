@@ -8,6 +8,7 @@ export const CATEGORIES = [
   { id: 'body',        label: 'Body'               },
   { id: 'engine',      label: 'Engine'             },
   { id: 'electronics', label: 'Electronics'        },
+  { id: 'safety',      label: 'Safety Gear'        },
   { id: 'facilities',  label: 'Facilities'         },
 ]
 
@@ -129,6 +130,11 @@ export const STORE_ITEMS = [
   { id: 'transponder', category: 'electronics', name: 'Transponder',          desc: 'AMB/MyLaps transponder. Required at all tracks — officials use it to record your times and position.', price: 150, unit: 'each', partsKey: 'transponder' },
   { id: 'mychron',     category: 'electronics', name: 'MyChron 6 Lap Timer', desc: 'AiM MyChron 6 data logger and lap timer. Required to read your times and dial in setup.',              price: 600, unit: 'each', partsKey: 'mychron'      },
 
+  // ── Safety Gear ───────────────────────────────────────────
+  { id: 'neckBrace',    category: 'safety', name: 'Neck Brace',      desc: 'SFI-rated neck support. Protects against fatal neck injuries in crashes. Can prevent game over events.', price: 45, unit: 'each', partsKey: 'neckBrace'   },
+  { id: 'ribProtector', category: 'safety', name: 'Rib Protector',   desc: 'SFI-rated chest protector. Prevents broken ribs and chest injuries. Can prevent game over events.', price: 65, unit: 'each', partsKey: 'ribProtector' },
+
   // ── Facilities ────────────────────────────────────────────
   { id: 'garage', category: 'facilities', name: 'Garage Space', desc: 'Dedicated garage bay at the track. Required to store spare karts and chassis between races. Cannot be rented until Season 2.', price: 5000, unit: 'season', partsKey: null, inventoryKey: null, lockedUntilSeason: 2 },
+  { id: 'seasonPass', category: 'facilities', name: 'Season Entry Pass', desc: 'Pre-pay for all entry fees this season. Save 20% vs paying per-race. Enter any race without deducting cash.', price: 0, unit: 'season', partsKey: null, inventoryKey: 'seasonPass', isSpecial: true },
 ]

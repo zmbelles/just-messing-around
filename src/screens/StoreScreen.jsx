@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { CATEGORIES, STORE_ITEMS } from '../data/storeItems'
 import { getLoadout, getLoadoutTotal } from '../data/loadouts'
 import { LoadoutConfirmModal } from '../components/LoadoutModal'
+import { getSessions } from '../data/sessions'
 import styles from './StoreScreen.module.css'
 import { soundManager, SOUNDS } from '../utils/soundManager'
 
@@ -37,9 +38,10 @@ export default function StoreScreen({ gameState, onPurchase, onBuyLoadout, onBac
     return 0
   }
 
-  function handleBuy(item) {
-    if (cash < item.price) return
-    onPurchase(item)
+  function handleBuy(item, price) {
+    const finalPrice = price !== undefined ? price : item.price
+    if (cash < finalPrice) return
+    onPurchase(item, 1, finalPrice)
   }
 
   const visible = STORE_ITEMS.filter(i => {
@@ -100,7 +102,25 @@ export default function StoreScreen({ gameState, onPurchase, onBuyLoadout, onBac
           <div className={styles.itemGrid}>
             {visible.map(item => {
               const qty        = getQty(item)
-              const canAfford  = cash >= item.price
+              let price = item.price
+              let displayPrice = item.price
+
+              // Calculate season pass price dynamically
+              if (item.id === 'seasonPass') {
+                const entryFees = {
+                  'norway': 120,
+                  'ignite-challenge': 150,
+                  'route66': 290,
+                }
+                const baseEntryFee = entryFees[championship.id] ?? 120
+                const numRaces = championship?.totalRaces ?? 4
+                const totalNormalCost = baseEntryFee * numRaces
+                const discountedCost = Math.round(totalNormalCost * 0.8)
+                price = discountedCost
+                displayPrice = discountedCost
+              }
+
+              const canAfford  = cash >= price
               const seasonLock = item.lockedUntilSeason && season < item.lockedUntilSeason
               return (
                 <div key={item.id} className={`${styles.itemCard} ${item.restrictedTo ? styles.itemCardRestricted : ''} ${seasonLock ? styles.itemCardLocked : ''}`}>
@@ -118,7 +138,7 @@ export default function StoreScreen({ gameState, onPurchase, onBuyLoadout, onBac
                   </div>
                   <div className={styles.itemBottom}>
                     <span className={styles.itemPrice}>
-                      ${item.price.toFixed(2)} <span className={styles.itemUnit}>/ {item.unit}</span>
+                      ${displayPrice.toFixed(2)} <span className={styles.itemUnit}>/ {item.unit}</span>
                     </span>
                     <div className={styles.buyRow}>
                       <span className={styles.ownedCount}>
@@ -127,7 +147,7 @@ export default function StoreScreen({ gameState, onPurchase, onBuyLoadout, onBac
                       <button
                         className={`${styles.buyBtn} ${canAfford && !seasonLock ? styles.buyBtnActive : ''}`}
                         disabled={!canAfford || seasonLock}
-                        onClick={() => handleBuy(item)}
+                        onClick={() => handleBuy(item, price)}
                         onMouseEnter={playHoverSound}
                       >
                         Buy
