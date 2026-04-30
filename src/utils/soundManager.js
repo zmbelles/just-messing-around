@@ -1,11 +1,11 @@
 // Audio file paths
 export const SOUNDS = {
-  titleMusic: '/src/music/title_screen_music.mp3',
-  careerMusic: '/src/music/car_building_and_career_screens_music.mp3',
-  raceEffect: '/src/sounds/during_race_effect.mp3',
-  purchaseEffect: '/src/sounds/purchase_effect.mp3',
-  failureEffect: '/src/sounds/thing_failed_effect.mp3',
-  hoverEffect: '/src/sounds/mouse_hover.mp3',
+  titleMusic: '/music/title_screen_music.mp3',
+  careerMusic: '/music/car_building_and_career_screens_music.mp3',
+  raceEffect: '/sounds/during_race_effect.mp3',
+  purchaseEffect: '/sounds/purchase_effect.mp3',
+  failureEffect: '/sounds/thing_failed_effect.mp3',
+  hoverEffect: '/sounds/mouse_hover.mp3',
 }
 
 class SoundManager {
