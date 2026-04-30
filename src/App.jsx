@@ -290,6 +290,7 @@ export default function App() {
           cash: prev.careerProgressToKeep.cash,
           experience: prev.careerProgressToKeep.experience,
           sponsorReputation: prev.careerProgressToKeep.sponsorReputation,
+          kart: prev.careerProgressToKeep.kart,
           continueFromCareer: false,
           careerProgressToKeep: null,
         }
@@ -408,6 +409,7 @@ export default function App() {
           cash: finalCash,
           experience: prev.experience,
           sponsorReputation: prev.sponsorReputation,
+          kart: prev.kart,  // Preserve equipped parts with their current durability
         },
       }
     })
