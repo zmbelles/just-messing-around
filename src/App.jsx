@@ -95,13 +95,11 @@ function buildInitialGameState(careerData) {
 
   // Determine starting tire type based on championship
   let defaultTireKey = 'tiresMGOrange'
-  let defaultTire = null
   if (careerData.championship.id === 'ignite-challenge') {
     defaultTireKey = 'tiresHoosierSlick'
   } else if (careerData.championship.id === 'route66') {
     defaultTireKey = 'tiresMGRed'
   }
-  defaultTire = STORE_ITEMS.find(i => i.partsKey === defaultTireKey)
 
   return {
     teamName:          careerData.teamName,
@@ -133,10 +131,10 @@ function buildInitialGameState(careerData) {
       wheel: 0,
     },
     tires: {
-      [defaultTireKey]: [{ durability: 100 }],
+      [defaultTireKey]: [],
     },
     kart: {
-      equippedTires:         defaultTire ? { ...defaultTire, setIndex: 0, durability: 100 } : null,
+      equippedTires:         null,
       equippedFrontSprocket: null,
       equippedRearSprocket:  null,
       equippedEngine:        { id: 'completeEngine', category: 'engine', name: 'Complete Engine', price: 450, partsKey: 'completeEngine', durability: 100, power: 100 },
@@ -534,25 +532,36 @@ export default function App() {
     }
   }
 
-  function handleEquipItem(slot, storeItem) {
+  function handleEquipItem(slot, storeItem, explicitSetIndex = null) {
     setGameState(prev => {
       const oldEquipped = prev.kart[slot]
       let parts = { ...prev.parts }
       let tires = { ...prev.tires }
 
       if (slot === 'equippedTires' && storeItem) {
-        // Equipping tires: prefer the previously equipped set (same type), then fresh (100%), then any with durability > 0
+        // Save the currently equipped tire's durability back into inventory before swapping
+        if (oldEquipped && oldEquipped.partsKey) {
+          const oldKey = oldEquipped.partsKey
+          const oldIdx = oldEquipped.setIndex
+          if (tires[oldKey] && tires[oldKey][oldIdx] != null) {
+            tires[oldKey] = [...tires[oldKey]]
+            tires[oldKey][oldIdx] = { durability: oldEquipped.durability }
+          }
+        }
+
         const tireKey = storeItem.partsKey
         const tireSets = tires[tireKey] ?? []
         let tireSetIndex = -1
 
-        // If switching back to the same tire type, prefer the previously equipped set index
-        if (oldEquipped && oldEquipped.partsKey === tireKey && oldEquipped.setIndex >= 0 && oldEquipped.setIndex < tireSets.length) {
+        if (explicitSetIndex !== null && explicitSetIndex >= 0 && explicitSetIndex < tireSets.length && tireSets[explicitSetIndex].durability > 0) {
+          // Explicitly chosen set
+          tireSetIndex = explicitSetIndex
+        } else if (oldEquipped && oldEquipped.partsKey === tireKey && oldEquipped.setIndex >= 0 && oldEquipped.setIndex < tireSets.length && tireSets[oldEquipped.setIndex].durability > 0) {
+          // Switching back to same type — prefer previous set
           tireSetIndex = oldEquipped.setIndex
         } else {
-          // Otherwise, find a fresh set (100% durability)
+          // Find a fresh set (100% durability)
           tireSetIndex = tireSets.findIndex(t => t.durability === 100)
-          // If no fresh set, find any set with durability > 0
           if (tireSetIndex < 0) {
             tireSetIndex = tireSets.findIndex(t => t.durability > 0)
           }
@@ -568,6 +577,7 @@ export default function App() {
           const tireKey = oldEquipped.partsKey
           const setIdx = oldEquipped.setIndex
           if (tires[tireKey] && tires[tireKey][setIdx] != null) {
+            tires[tireKey] = [...tires[tireKey]]
             tires[tireKey][setIdx] = { durability: oldEquipped.durability }
           }
         }
@@ -766,13 +776,22 @@ export default function App() {
         next = { ...next, kart: { ...next.kart, equippedWheels: { ...next.kart.equippedWheels, durability: Math.max(0, next.kart.equippedWheels.durability - (isRaceSession ? 2 : 0)) } } }
       }
 
-      // Award experience based on finishing position in race sessions
+      // Award experience based on finishing position in race sessions.
+      // Balance target: 2 full Norway seasons (13 races each = 26 races)
+      // should bring the player to ~XP 20–22, enough for consistent top-20s
+      // in Route 66. Mid-pack Norway finishes ≈ 0.75 XP/race → 26 × 0.75 ≈ 19.5.
       if (isRaceSession && !playerRow?.dnf && playerRow) {
-        const xpRates = prev.championship.id === 'norway'
-          ? [0.06, 0.05, 0.04, 0.03, 0.025, 0.02, 0.015, 0.01]  // 1-6% (reduced)
-          : [0.03, 0.027, 0.024, 0.021, 0.018, 0.015, 0.012, 0.009]  // 1-3% (reduced from 1-5%)
-        const xpRate = xpRates[playerRow.pos - 1] ?? 0
-        const xpGain = Math.max(1, Math.ceil(prev.experience * xpRate))
+        const xpTablePerRace = prev.championship.id === 'norway'
+          // Norway: easier field, finishing higher should reward more — but the
+          // mid-pack average lands near 0.75 XP/race for the 2-season goal.
+          ? [1.4, 1.2, 1.0, 0.9, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60, 0.55, 0.50, 0.45, 0.40, 0.35, 0.30, 0.25]
+          // Route 66 / Ignite: harder fields, lower XP since you're already
+          // expected to be experienced. Caps at top of skill curve quickly.
+          : [0.9, 0.8, 0.7, 0.6, 0.55, 0.50, 0.45, 0.40, 0.35, 0.30, 0.25, 0.20, 0.18, 0.16, 0.14, 0.12, 0.10]
+        const xpFlat = xpTablePerRace[playerRow.pos - 1] ?? 0.05
+        // Tiny percentage component so high-XP players still inch forward
+        const xpPct  = (prev.experience ?? 0) * (prev.championship.id === 'norway' ? 0.005 : 0.003)
+        const xpGain = xpFlat + xpPct
         next = { ...next, experience: (next.experience ?? 0) + xpGain }
       }
 

@@ -6,12 +6,12 @@ export const CHAMPIONSHIPS = [
   {
     id: 'norway',
     name: 'Norway Motorsports Park Club Championship',
-    subtitle: 'Norway Motorsports Park',
+    subtitle: 'Norway Motorsports Park · 1 race dev test',
     difficulty: 'Easy',
     logo: norwayLogo,
     logoBg: false,
     margayWarning: false,
-    totalRaces: 4,
+    totalRaces: 1,
     tracks: [
       'Norway Motorsports Park',
     ],

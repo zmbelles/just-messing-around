@@ -34,20 +34,33 @@ export function simulateSession(session, standings, gameState) {
   const { manufacturer, championship, experience, kart, nextRace, raceWeekend } = gameState
   const isRace = RACE_SESSIONS.has(session.name)
   const track  = cfg(championship)
-  const baseSkill   = Math.min(82, 50 + Math.floor(experience ?? 0))
+  // Player skill grows with experience. Starts at 42 (raw rookie) and gains
+  // ~1.4 skill per XP point, capping at 82.
+  // - XP 0  → skill 42 (well below the field; finishes ~30s in Route 66)
+  // - XP 10 → skill 56 (low 20s in Route 66)
+  // - XP 20 → skill 70 (consistent top-20 in Route 66, after ~2 Norway seasons)
+  // - XP 28+→ skill 82 cap (top contender)
+  const xp          = Math.max(0, experience ?? 0)
+  const baseSkill   = Math.min(82, 42 + xp * 1.4)
   const strength    = computeSetupStrength(kart, nextRace?.track, raceWeekend?.weather, championship, manufacturer)
   const setupBonus  = setupSkillBonus(strength, championship)
   // Engine power: stock LO206 = 100. Above-stock engines (Dmitri, etc.) confer
   // a per-power-point skill bonus; durability dampens the gain as the engine wears.
+  // Capped so a great engine can't fully compensate for inexperience.
   const enginePwr   = kart?.equippedEngine?.power      ?? 100
   const engineDur   = kart?.equippedEngine?.durability ?? 100
-  const engineBonus = Math.max(0, (enginePwr - 100)) * 0.30 * (engineDur / 100)
+  const engineBonus = Math.min(6, Math.max(0, (enginePwr - 100)) * 0.20 * (engineDur / 100))
 
   // Tire penalty: when tires drop below 80% durability, they start affecting lap times
   const tireDur = kart?.equippedTires?.durability ?? 100
   const tirePenalty = tireDur > 0 && tireDur < 80 ? (80 - tireDur) * 0.3 : 0
 
-  const playerSkill = baseSkill + setupBonus + engineBonus - tirePenalty
+  // Kart bonuses scale with experience: a great kart helps a lot once you can
+  // drive it, but won't carry a rookie into the top-20.
+  // - XP 0  → 30% kart effectiveness
+  // - XP 20 → 100% (full benefit by the 2-season XP target)
+  const kartBonusScale = Math.min(1, 0.3 + xp * 0.035)
+  const playerSkill = baseSkill + (setupBonus + engineBonus) * kartBonusScale - tirePenalty
 
   // Big day-factor swings so finishes vary session to session
   // Club races have less jitter since it's easier; harder championships need more variation
